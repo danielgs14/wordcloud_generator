@@ -1,6 +1,4 @@
-import sys
-print(sys.executable)
-
+# imports
 import io
 import os
 import unicodedata
@@ -10,22 +8,22 @@ import pandas as pd
 import streamlit as st
 from wordcloud import WordCloud
 
+# page config
 st.set_page_config(
     page_title="Word Cloud Generator",
-    page_icon="☁️",
+    page_icon="🥥",
     layout="wide",
     initial_sidebar_state="expanded"
 )
 
 st.title(" Word Cloud Generator")
-st.markdown("Upload a CSV, tweak the settings, and generate your word cloud.")
+st.markdown("Upload a CSV, select your settings, and generate your word cloud.")
 
 
 def normalize_text(text: str) -> str:
     text = text.lower()
     nfd = unicodedata.normalize("NFD", text)
     return "".join(i for i in nfd if unicodedata.category(i) != "Mn")
-
 
 def build_wordcloud(text, width, height, background, colormap, max_words, font_path):
     transparent = background.lower() == "none"
@@ -57,7 +55,7 @@ def build_wordcloud(text, width, height, background, colormap, max_words, font_p
     return buf
 
 with st.sidebar:
-    st.header("⚙️ Settings")
+    st.header("🍉 Settings")
 
     colormap = st.selectbox(
         "Color palette",
@@ -76,18 +74,16 @@ with st.sidebar:
     max_words = st.slider("Max words", min_value=20, max_value=500, value=200, step=10)
 
     st.divider()
-    st.subheader("🔤 Font")
+    st.subheader("🥭 Font")
     default_font = os.path.join("files", "fonts", "YanoneKaffeesatz-Regular.ttf")
     font_path = st.text_input("Font path (.ttf / .otf)", value=default_font)
     if font_path and not os.path.exists(font_path):
         st.warning("Font file not found — default font will be used.")
 
     st.divider()
-    st.subheader("📐 Dimensions")
+    st.subheader("🍈 Dimensions")
     width  = st.number_input("Width (px)",  min_value=400, max_value=4000, value=1200, step=100)
     height = st.number_input("Height (px)", min_value=200, max_value=4000, value=700,  step=100)
-
-# ── Main area ─────────────────────────────────────────────────────────────────
 
 st.header("1. Upload your CSV")
 uploaded_file = st.file_uploader("Choose a CSV file", type="csv")
@@ -102,7 +98,7 @@ if uploaded_file:
     st.divider()
     st.header("2. Generate Word Cloud")
 
-    if st.button("Generate ☁️", type="primary"):
+    if st.button("Generate 🥥", type="primary"):
         text_raw = " ".join(df[column].dropna().astype(str).tolist())
         text = normalize_text(text_raw)
 
@@ -123,7 +119,7 @@ if uploaded_file:
             st.image(img_buf, use_container_width=True)
 
             st.download_button(
-                label="⬇️ Download Word Cloud as PNG",
+                label="🍍 Download Word Cloud as PNG",
                 data=img_buf,
                 file_name="wordcloud.png",
                 mime="image/png"
