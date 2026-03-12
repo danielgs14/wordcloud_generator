@@ -2,10 +2,11 @@
 import io
 import os
 import unicodedata
+from collections import Counter
 import matplotlib.pyplot as plt
 import pandas as pd
 import streamlit as st
-from wordcloud import WordCloud, STOPWORDS
+from wordcloud import WordCloud
 
 # page config
 st.set_page_config(
@@ -30,6 +31,8 @@ def build_wordcloud(text, width, height, background, colormap, max_words, font_p
     transparent = background.lower() == "none"
     bg_color = None if transparent else background
 
+    word_counts = Counter(text.split())
+
     wc = WordCloud(
         width=width,
         height=height,
@@ -37,11 +40,11 @@ def build_wordcloud(text, width, height, background, colormap, max_words, font_p
         mode="RGBA" if transparent else "RGB",
         colormap=colormap,
         max_words=max_words,
-        collocations=True,
+        collocations=False,
         prefer_horizontal=0.85,
         margin=10,
         font_path=font_path if font_path and os.path.exists(font_path) else None,
-    ).generate(text)
+    ).generate_from_frequencies(word_counts)
 
     fig_height = height / 100
     fig, ax = plt.subplots(figsize=(width / 100, fig_height), dpi=100)
